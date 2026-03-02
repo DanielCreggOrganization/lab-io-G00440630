@@ -14,5 +14,13 @@ public class Main {
         } else {
             System.out.println("input.txt not found at: " + inputFilePath.toAbsolutePath());
         }
+        System.out.println();
+        Path outputFilePath = projectRoot.resolve("resources").resolve("output.txt");
+
+        if (Files.exists(outputFilePath)) {
+            System.out.println("output.txt found at: " + outputFilePath.toAbsolutePath());
+        } else {
+            System.out.println("output.txt not found at: " + outputFilePath.toAbsolutePath());
+        }
     }
 }
