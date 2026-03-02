@@ -1,37 +1,45 @@
 package ie.atu.iolab;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) {
-        // Define the path to the file we want to read
-        Path filePath = Paths.get("resources", "input.txt");
-        int byteFromFile;  // Variable to hold the current byte being read
-        // Track the amount of bytes read
-        int byteCount = 0;
-        int charCount = 0;
-        // try-with-resources ensures the FileInputStream is closed automatically.
-        // We use .toFile() to convert the NIO Path object to a standard Java File object.
-        try (FileInputStream fis = new FileInputStream(filePath.toFile())) {
-            // read() reads one byte of data from the input stream. 
-            // It returns -1 when there is no more data (End Of File).
-            while ((byteFromFile = fis.read()) != -1) {
-                // Casting the byte to a char works here because we're using basic ASCII text.
-                // For advanced encodings (like UTF-8), a Reader should be used instead.
-                System.out.print((byte) byteFromFile); 
-                byteCount++;
-                System.out.print((char) byteFromFile); 
-                charCount++;
+        Path inputPath = Paths.get("resources", "input.txt");
+        Path outputPath = Paths.get("resources", "output.txt");
+        int data;
+        
+        try (FileInputStream fis = new FileInputStream(inputPath.toFile());
+             FileOutputStream fos = new FileOutputStream(outputPath.toFile())) {
+            while ((data = fis.read()) != -1) {
+                char c = (char) data;
+                char toWrite;
+                // only uppercase the letters T, H, I, S (regardless of case in input)
+                if ("THIS".indexOf(Character.toUpperCase(c)) >= 0) {
+                    toWrite = Character.toUpperCase(c);
+                } else {
+                    toWrite = Character.toLowerCase(c);
+                }
+                fos.write(toWrite);
             }
         } catch (IOException e) {
-            // IOException acts as a catch-all for stream errors,
-            // including FileNotFoundException.
-            System.err.println("Error reading file: " + e.getMessage());
+            System.err.println("Error copying file: " + e.getMessage());
         }
-        System.out.println("\nTotal bytes: " + byteCount);
-        System.out.println("\nTotal characters: " + charCount);
+        System.out.println("File processed successfully.");
+
+        // now read the result file and print its contents to the console
+        try (java.io.FileInputStream fis2 = new java.io.FileInputStream(outputPath.toFile())) {
+            int b;
+            System.out.println("\nContents of " + outputPath + ":");
+            while ((b = fis2.read()) != -1) {
+                System.out.print((char)b);
+            }
+            System.out.println();
+        } catch (IOException e) {
+            System.err.println("Error reading output file: " + e.getMessage());
+        }
     }
 }
