@@ -1,0 +1,6 @@
+What is NIO? It stands for 
+New I/O, and it's a powerful 
+way to handle file operations
+in Java. It offers better 
+performance and more features 
+than the old java.io package.
